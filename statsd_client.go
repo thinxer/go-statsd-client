@@ -13,26 +13,26 @@ type Statter struct {
 }
 
 func (s Statter) Counter(sampling float64, bucket string, n int) error {
-	return s.Send(sampling, bucket, n, "c", nil)
+	return s.Send(sampling, bucket, n, "c")
 }
 
 func (s Statter) Timing(sampling float64, bucket string, v time.Duration) error {
-	return s.Send(sampling, bucket, v.Nanoseconds()/1000000, "ms", nil)
+	return s.Send(sampling, bucket, v.Nanoseconds()/1000000, "ms")
 }
 
 func (s Statter) Gauge(sampling float64, bucket string, v interface{}) error {
-	return s.Send(sampling, bucket, v, "g", nil)
+	return s.Send(sampling, bucket, v, "g")
 }
 
 func (s Statter) Histogram(sampling float64, bucket string, v interface{}) error {
-	return s.Send(sampling, bucket, v, "h", nil)
+	return s.Send(sampling, bucket, v, "h")
 }
 
 func (s Statter) Set(sampling float64, bucket string, v interface{}) error {
-	return s.Send(sampling, bucket, v, "s", nil)
+	return s.Send(sampling, bucket, v, "s")
 }
 
-func (s Statter) Send(sampling float64, bucket string, v interface{}, t string, optionals []string) error {
+func (s Statter) Send(sampling float64, bucket string, v interface{}, t string, optionals ...interface{}) error {
 	if s.Writer == nil || !maybe(sampling) {
 		return nil
 	}
@@ -53,7 +53,7 @@ func (s Statter) Send(sampling float64, bucket string, v interface{}, t string, 
 		fmt.Fprintf(buf, "|@%f", sampling)
 	}
 	for _, o := range optionals {
-		fmt.Fprintf(buf, "|%s", o)
+		fmt.Fprintf(buf, "|%v", o)
 	}
 	buf.WriteByte('\n')
 	_, err := buf.WriteTo(s)
