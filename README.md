@@ -17,6 +17,6 @@ statter := statsd.Statter{conn}
 // Send a counter
 statter.Counter(1.0, "succeed", 1)
 // Or with a tag
-statter.Send(1.0, "succeed", 1, "c", []string{"#foo"})
+statter.Send(1.0, "succeed", 1, "c", "#foo")
 
 ```
